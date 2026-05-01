@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "the_veil",
+  "version": "${version}",
+  "name": "The Veil",
+  "description": "A parallel universe that boarders all others",
+  "authors": [
+    "Luramoth"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/the_veil/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.luramoth.theveil.fabric.TheVeilModFabric"
+    ],
+    "client": [
+      "com.luramoth.theveil.fabric.client.TheVeilFabricModClient"
+    ]
+  },
+  "mixins": [
+    "the_veil.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "architectury": ">=13.0.8",
+    "fabric-api": "*",
+    "accessories": "1.1.0-beta.53+1.21.1"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
