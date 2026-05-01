@@ -1,0 +1,23 @@
+﻿{
+  "type": "minecraft:crafting_shaped",
+  "show_notification": false,
+  "group": "the veil",
+  "category": "equipment",
+  "pattern": [
+    "xxx",
+    "x x",
+    "xix"
+  ],
+  "key": {
+    "x": {
+      "item": "minecraft:gold_nugget"
+    },
+    "i": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "the_veil:pendant",
+    "count": 1
+  }
+}
