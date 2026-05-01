@@ -20,7 +20,7 @@ public class TheVeilModItems {
     }
 
     public static void init() {
-        PENDANT = registerItem("pendant", () -> new Item(new Item.Properties()));
+        PENDANT = registerItem("pendant", () -> new Item(new Item.Properties().stacksTo(1).arch$tab(CreativeModeTabs.TOOLS_AND_UTILITIES)));
 
         ITEMS.register();
     }
