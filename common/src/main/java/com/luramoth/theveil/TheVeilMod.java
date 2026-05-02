@@ -1,7 +1,10 @@
 package com.luramoth.theveil;
 
 import com.luramoth.theveil.components.TheVeilModComponents;
+import com.luramoth.theveil.data.CatalystManager;
 import com.luramoth.theveil.items.TheVeilModItems;
+import dev.architectury.registry.ReloadListenerRegistry;
+import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,5 +18,7 @@ public final class TheVeilMod {
 
         TheVeilModItems.ITEMS.register();
         TheVeilModComponents.COMPONENTS.register();
+
+        ReloadListenerRegistry.register(PackType.SERVER_DATA, new CatalystManager());
     }
 }
