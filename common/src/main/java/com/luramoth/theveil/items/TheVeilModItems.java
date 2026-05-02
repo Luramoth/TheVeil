@@ -13,12 +13,12 @@ import java.util.function.Supplier;
 public class TheVeilModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TheVeilMod.MOD_ID, Registries.ITEM);
 
-    public static final RegistrySupplier<Item> PENDANT = registerItem("pendant", () -> new Item(new Item.Properties()
+    public static final RegistrySupplier<PendentItem> PENDANT = registerItem("pendant", () -> new PendentItem(new Item.Properties()
             .stacksTo(1)
             .arch$tab(CreativeModeTabs.TOOLS_AND_UTILITIES)
     ));
 
-    public static RegistrySupplier<Item> registerItem(String name, Supplier<Item> item) {
+    public static <T extends Item> RegistrySupplier<T> registerItem(String name, Supplier<T> item) {
         return ITEMS.register(ResourceLocation.fromNamespaceAndPath(TheVeilMod.MOD_ID, name), item);
     }
 }
