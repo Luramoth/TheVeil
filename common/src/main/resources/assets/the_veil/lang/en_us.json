@@ -7,5 +7,11 @@
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
-  "dimension.minecraft.the_end": "The End"
+  "dimension.minecraft.the_end": "The End",
+
+  "category.the_veil.key_category": "The Veil",
+
+  "key.the_veil.next_dimension": "Next Dimension",
+  "key.the_veil.last_dimension": "Last Dimension",
+  "key.the_veil.open_rift": "Open Rift"
 }
