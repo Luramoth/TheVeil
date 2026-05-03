@@ -74,14 +74,16 @@ public class PendantSmithingRecipe implements SmithingRecipe {
 
     public static class Serialiser implements RecipeSerializer<PendantSmithingRecipe> {
 
+        private static final PendantSmithingRecipe INSTANCE = new PendantSmithingRecipe();
+
         @Override
         public @NotNull MapCodec<PendantSmithingRecipe> codec() {
-            return MapCodec.unit(PendantSmithingRecipe::new);
+            return MapCodec.unit(INSTANCE);
         }
 
         @Override
         public @NotNull StreamCodec<RegistryFriendlyByteBuf, PendantSmithingRecipe> streamCodec() {
-            return StreamCodec.unit(new PendantSmithingRecipe());
+            return StreamCodec.unit(INSTANCE);
         }
     }
 }
