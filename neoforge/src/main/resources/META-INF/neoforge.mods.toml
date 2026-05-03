@@ -23,6 +23,7 @@ side = "BOTH"
 [[dependencies.the_veil]]
 modId = "minecraft"
 type = "required"
+reason = "How the fuck did you trigger this???"
 versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
@@ -30,6 +31,7 @@ side = "BOTH"
 [[dependencies.the_veil]]
 modId = "architectury"
 type = "required"
+reason = "Provides loader agnostic API so this mod can ultimately work on both neoforge and fabric"
 versionRange = "[13.0.8,)"
 ordering = "AFTER"
 side = "BOTH"
@@ -37,7 +39,16 @@ side = "BOTH"
 [[dependencies.the_veil]]
 modId = "accessories"
 type = "required"
+reason = "Fundamental items in The Veil require wearability in specialised slots"
 versionRange = "[1.1.0-beta.53+1.21.1,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.the_veil]]
+modId = "emi"
+type = "optional"
+reason = "Provides crafting recipes because in all honesty who uses the recipe book?"
+versionRange = "[1.1.22+1.21.1,)"
 ordering = "BEFORE"
 side = "BOTH"
 
