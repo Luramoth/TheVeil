@@ -42,7 +42,7 @@ public class PendantSmithingRecipe implements SmithingRecipe {
     }
 
     private static boolean is_dim_already_unlocked(SmithingRecipeInput input){
-        ItemStack pendant = input.base().copy();
+        ItemStack pendant = input.base();
         ItemStack catalyst = input.addition();
 
         ResourceKey<Level> newDim = CatalystManager.getDimensionFor(catalyst.getItem());
