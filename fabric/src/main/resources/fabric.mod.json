@@ -15,12 +15,9 @@
   "icon": "assets/the_veil/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "com.luramoth.theveil.fabric.TheVeilModFabric"
-    ],
-    "client": [
-      "com.luramoth.theveil.fabric.client.TheVeilFabricModClient"
-    ]
+    "main": [ "com.luramoth.theveil.fabric.TheVeilModFabric" ],
+    "client": [ "com.luramoth.theveil.fabric.client.TheVeilFabricModClient" ],
+    "emi": [ "com.luramoth.theveil.emi.TheVeilModEmiPlugin" ]
   },
   "mixins": [
     "the_veil.mixins.json"

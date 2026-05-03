@@ -21,7 +21,7 @@ import java.util.Map;
 public class CatalystManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    private static final Map<Item, ResourceKey<Level>> CATALYSTS = new HashMap<>();
+    public static final Map<Item, ResourceKey<Level>> CATALYSTS = new HashMap<>();
 
     public CatalystManager() {
         super(GSON, "veil_catalysts");
