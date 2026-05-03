@@ -18,11 +18,6 @@
   },
   "result": {
     "id": "the_veil:pendant",
-    "count": 1,
-    "components": {
-      "the_veil:pendant_data": {
-        "dimensions": []
-      }
-    }
+    "count": 1
   }
 }
