@@ -20,7 +20,7 @@ import java.util.List;
 public class PendantSmithingRecipe implements SmithingRecipe {
     @Override
     public boolean isTemplateIngredient(ItemStack stack) {
-        return true;
+        return stack.isEmpty();
     }
 
     @Override
@@ -35,7 +35,8 @@ public class PendantSmithingRecipe implements SmithingRecipe {
 
     @Override
     public boolean matches(SmithingRecipeInput input, Level level) {
-        return input.base().is(TheVeilModItems.PENDANT.get()) &&
+        return input.template().isEmpty() &&
+                input.base().is(TheVeilModItems.PENDANT.get()) &&
                 CatalystManager.getDimensionFor(input.addition().getItem()) != null;
     }
 
@@ -58,7 +59,7 @@ public class PendantSmithingRecipe implements SmithingRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public @NotNull ItemStack getResultItem(HolderLookup.Provider registries) {
         return new ItemStack(TheVeilModItems.PENDANT.get());
     }
 
