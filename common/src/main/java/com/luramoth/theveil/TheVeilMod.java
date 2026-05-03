@@ -17,8 +17,6 @@ public final class TheVeilMod {
     public static void init() {
         LOGGER.info("Mod loader is entering The Veil...");
 
-        TheVeilModKeybinds.init();
-
         TheVeilModItems.ITEMS.register();
         TheVeilModComponents.COMPONENTS.register();
         TheVeilModRecipes.SERIALISERS.register();
