@@ -1,0 +1,87 @@
+package com.luramoth.theveil.recipies;
+
+import com.luramoth.theveil.components.PendantData;
+import com.luramoth.theveil.components.TheVeilModComponents;
+import com.luramoth.theveil.data.CatalystManager;
+import com.luramoth.theveil.items.TheVeilModItems;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class PendantSmithingRecipe implements SmithingRecipe {
+    @Override
+    public boolean isTemplateIngredient(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean isBaseIngredient(ItemStack stack) {
+        return stack.is(TheVeilModItems.PENDANT.get());
+    }
+
+    @Override
+    public boolean isAdditionIngredient(ItemStack stack) {
+        return CatalystManager.getDimensionFor(stack.getItem()) != null;
+    }
+
+    @Override
+    public boolean matches(SmithingRecipeInput input, Level level) {
+        return input.base().is(TheVeilModItems.PENDANT.get()) &&
+                CatalystManager.getDimensionFor(input.addition().getItem()) != null;
+    }
+
+    @Override
+    public @NotNull ItemStack assemble(SmithingRecipeInput input, HolderLookup.Provider registries) {
+        ItemStack pendant = input.base().copy();
+        ItemStack catalyst = input.addition();
+
+        ResourceKey<Level> newDim = CatalystManager.getDimensionFor(catalyst.getItem());
+        if (newDim != null) {
+            PendantData data = pendant.getOrDefault(TheVeilModComponents.PENDENT_DATA.get(), PendantData.DEFAULT);
+            List<ResourceKey<Level>> dims = new ArrayList<>(data.unlockedDimensions());
+
+            if (!dims.contains(newDim)){
+                dims.add(newDim);
+                pendant.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims));
+            }
+        }
+        return pendant;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        return new ItemStack(TheVeilModItems.PENDANT.get());
+    }
+
+    @Override
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return TheVeilModRecipies.PENDANT_SMITHING.get();
+    }
+
+    @Override
+    public @NotNull RecipeType<?> getType() {
+        return RecipeType.SMITHING;
+    }
+
+    public static class Serialiser implements RecipeSerializer<PendantSmithingRecipe> {
+
+        @Override
+        public @NotNull MapCodec<PendantSmithingRecipe> codec() {
+            return MapCodec.unit(PendantSmithingRecipe::new);
+        }
+
+        @Override
+        public @NotNull StreamCodec<RegistryFriendlyByteBuf, PendantSmithingRecipe> streamCodec() {
+            return StreamCodec.unit(new PendantSmithingRecipe());
+        }
+    }
+}

@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -24,41 +25,33 @@ public class PendentItem extends Item implements Accessory {
         super(properties);
     }
 
-    @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-        TheVeilMod.LOGGER.info("Interaction!");
-        ItemStack mainStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-        ItemStack offStack = player.getItemInHand(InteractionHand.OFF_HAND);
-
-        // check if the pendant is in the offhand before running pressing logic
-        if (usedHand == InteractionHand.MAIN_HAND && offStack.getItem() instanceof PendentItem){
-            TheVeilMod.LOGGER.info("good Interaction!");
-            // check to see if mainhand item is a valid catalyst
-            ResourceKey<Level> targetDim = CatalystManager.getDimensionFor(mainStack.getItem());
-            if (targetDim == null) return InteractionResultHolder.pass(player.getItemInHand(usedHand));
-
-            // grabs PendantData data component from pendant
-            PendantData currentData = offStack.getOrDefault(TheVeilModComponents.PENDENT_DATA.get(), PendantData.DEFAULT);
-
-            // makes a mutable copy of the currently unlocked dimensions
-            List<ResourceKey<Level>> dims = new ArrayList<>(currentData.unlockedDimensions());
-
-            // if dimension isn't already registered in the pendant then continue
-            if (!dims.contains(targetDim)){
-                // add dimension and replace old list with new one
-                dims.add(targetDim);
-                offStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims));
-
-                // decrement stack on the server
-                if(!level.isClientSide){
-                    mainStack.shrink(1);
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.DEEPSLATE_HIT, SoundSource.PLAYERS, 0.5f, 1.5f);
-                }
-                return InteractionResultHolder.sidedSuccess(mainStack, level.isClientSide());
-            }
-        }
-
-        return super.use(level, player, usedHand);
-    }
+//    public static InteractionResult tryPressGem(Player player, ItemStack mainStack, ItemStack offStack) {
+//        ItemStack pendantStack = (mainStack.getItem() instanceof PendentItem) ? mainStack :
+//                (offStack.getItem() instanceof PendentItem) ? offStack: null;
+//
+//        if (pendantStack == null) return InteractionResult.PASS;
+//
+//        ItemStack gemStack = (pendantStack == mainStack) ? offStack : mainStack;
+//
+//        ResourceKey<Level> targetDim = CatalystManager.getDimensionFor(gemStack.getItem());
+//
+//        if (targetDim != null) {
+//            PendantData currentData = pendantStack.getOrDefault(TheVeilModComponents.PENDENT_DATA.get(), PendantData.DEFAULT);
+//            List<ResourceKey<Level>> dims = new ArrayList<>(currentData.unlockedDimensions());
+//
+//            if (dims.contains(targetDim)) {
+//                if (!player.level().isClientSide){
+//                    dims.add(targetDim);
+//                    pendantStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims));
+//                    gemStack.shrink(1);
+//
+//                    player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+//                            SoundEvents.DEEPSLATE_HIT, SoundSource.PLAYERS, 0.5f, 1.5f);
+//                }
+//
+//                return InteractionResult.SUCCESS;
+//            }
+//        }
+//        return InteractionResult.PASS;
+//    }
 }
