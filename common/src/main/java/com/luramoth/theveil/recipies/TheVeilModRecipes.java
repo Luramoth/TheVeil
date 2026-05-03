@@ -5,9 +5,8 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 
-public class TheVeilModRecipies {
+public class TheVeilModRecipes {
     public static final DeferredRegister<RecipeSerializer<?>> SERIALISERS =
             DeferredRegister.create(TheVeilMod.MOD_ID, Registries.RECIPE_SERIALIZER);
 

@@ -20,7 +20,7 @@ import java.util.List;
 public class PendantSmithingRecipe implements SmithingRecipe {
     @Override
     public boolean isTemplateIngredient(ItemStack stack) {
-        return false;
+        return true;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class PendantSmithingRecipe implements SmithingRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return TheVeilModRecipies.PENDANT_SMITHING.get();
+        return TheVeilModRecipes.PENDANT_SMITHING.get();
     }
 
     @Override
