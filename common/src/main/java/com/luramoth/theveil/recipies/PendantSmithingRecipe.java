@@ -37,7 +37,19 @@ public class PendantSmithingRecipe implements SmithingRecipe {
     public boolean matches(SmithingRecipeInput input, Level level) {
         return input.template().isEmpty() &&
                 input.base().is(TheVeilModItems.PENDANT.get()) &&
-                CatalystManager.getDimensionFor(input.addition().getItem()) != null;
+                CatalystManager.getDimensionFor(input.addition().getItem()) != null &&
+                !is_dim_already_unlocked(input);
+    }
+
+    private static boolean is_dim_already_unlocked(SmithingRecipeInput input){
+        ItemStack pendant = input.base().copy();
+        ItemStack catalyst = input.addition();
+
+        ResourceKey<Level> newDim = CatalystManager.getDimensionFor(catalyst.getItem());
+        PendantData data = pendant.getOrDefault(TheVeilModComponents.PENDENT_DATA.get(), PendantData.DEFAULT);
+        List<ResourceKey<Level>> dims = new ArrayList<>(data.unlockedDimensions());
+
+        return dims.contains(newDim);
     }
 
     @Override
