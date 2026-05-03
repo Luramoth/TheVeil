@@ -1,4 +1,7 @@
 ﻿{
   "item.the_veil.pendant": "Pendant",
-  "item.the_veil.pendant.description": "A hand crafted pendant capable of holding minerals from all of Minecraft"
+  "item.the_veil.pendant.description1": "A hand-crafted pendant",
+  "item.the_veil.pendant.description2": "capable of holding minerals from all of Minecraft",
+  "item.the_veil.pendant.unlocked_dimensions": "Unlocked Dimensions",
+  "item.the_veil.pendant.inert": "Inert."
 }
