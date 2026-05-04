@@ -61,7 +61,8 @@ public class CatalystManager extends SimpleJsonResourceReloadListener {
     }
 
     public static ResourceKey<Level> getDimensionFor(Item item) {
-        return CATALYSTS.get(item).dim();
+        CatalystData data = CATALYSTS.get(item);
+        return (data != null) ? data.dim() : null;
     }
 
     public static int getColorFor(ResourceKey<Level> dimension) {
@@ -69,8 +70,8 @@ public class CatalystManager extends SimpleJsonResourceReloadListener {
 
         if (values.isEmpty()) return 0x130134;
 
-        for (int i = 0; i < values.size() - 1; i++) {
-            if (values.get(i).dim() == dimension) return values.get(i).color();
+        for (CatalystData value : values) {
+            if (value.dim() == dimension) return value.color();
         }
 
         return 0x130134;
