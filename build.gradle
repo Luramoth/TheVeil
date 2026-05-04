@@ -17,11 +17,14 @@ allprojects {
             name = 'ParchmentMC'
             url = 'https://maven.parchmentmc.org'
         }
+
+        // Accessories
         maven { url 'https://maven.wispforest.io/releases' }
         maven { url 'https://maven.su5ed.dev/releases' }
         maven { url 'https://maven.shedaniel.me/' }
         maven { url 'https://maven.fabricmc.net' }
 
+        // EMI
         maven {
             name = "TerraformersMC"
             url = "https://maven.terraformersmc.com/"
