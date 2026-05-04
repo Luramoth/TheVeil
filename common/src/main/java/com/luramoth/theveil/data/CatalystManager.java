@@ -46,7 +46,7 @@ public class CatalystManager extends SimpleJsonResourceReloadListener {
 
                 // get color
                 String hexString = json.get("color").getAsString();
-                int color = Integer.parseInt(hexString, 16);
+                int color = Integer.parseInt(hexString, 16) | 0xFF000000;
 
                 CATALYSTS.put(item, new CatalystData(dimKey, color));
             } catch (Exception e) {
@@ -68,12 +68,12 @@ public class CatalystManager extends SimpleJsonResourceReloadListener {
     public static int getColorFor(ResourceKey<Level> dimension) {
         List<CatalystData> values = CATALYSTS.values().stream().toList();
 
-        if (values.isEmpty()) return 0x130134;
+        if (values.isEmpty()) return 0x13013400;
 
         for (CatalystData value : values) {
             if (value.dim() == dimension) return value.color();
         }
 
-        return 0x130134;
+        return 0x13013400;
     }
 }

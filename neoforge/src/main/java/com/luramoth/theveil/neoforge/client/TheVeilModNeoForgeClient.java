@@ -7,13 +7,18 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLModContainer;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 @Mod(value = "the_veil", dist = Dist.CLIENT)
 public class TheVeilModNeoForgeClient {
     public TheVeilModNeoForgeClient(FMLModContainer container, IEventBus modBus, Dist dist) {
-        TheVeilModClient.init();
+        modBus.addListener(this::onClientSetup);
+    }
+
+    private void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(TheVeilModClient::init);
     }
 
     @SubscribeEvent
