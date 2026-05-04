@@ -2,6 +2,7 @@ package com.luramoth.theveil;
 
 import com.luramoth.theveil.components.TheVeilModComponents;
 import com.luramoth.theveil.data.CatalystManager;
+import com.luramoth.theveil.fluids.TheVeilModFluids;
 import com.luramoth.theveil.items.TheVeilModItems;
 import com.luramoth.theveil.networking.TheVeilModNetworking;
 import com.luramoth.theveil.recipies.TheVeilModRecipes;
@@ -21,6 +22,8 @@ public final class TheVeilMod {
         TheVeilModItems.ITEMS.register();
         TheVeilModComponents.COMPONENTS.register();
         TheVeilModRecipes.SERIALISERS.register();
+        TheVeilModFluids.FLUIDS.register();
+        TheVeilModFluids.BLOCKS.register();
 
         TheVeilModNetworking.init();
 
