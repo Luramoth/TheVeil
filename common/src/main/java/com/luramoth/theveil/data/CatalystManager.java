@@ -68,12 +68,12 @@ public class CatalystManager extends SimpleJsonResourceReloadListener {
     public static int getColorFor(ResourceKey<Level> dimension) {
         List<CatalystData> values = CATALYSTS.values().stream().toList();
 
-        if (values.isEmpty()) return 0x13013400;
+        if (values.isEmpty()) return 0xFF130134;
 
         for (CatalystData value : values) {
             if (value.dim() == dimension) return value.color();
         }
 
-        return 0x13013400;
+        return 0xFF130134;
     }
 }
