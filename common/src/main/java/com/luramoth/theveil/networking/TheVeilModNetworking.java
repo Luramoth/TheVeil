@@ -71,8 +71,6 @@ public class TheVeilModNetworking {
     }
 
     public static void init() {
-        NetworkManager.registerS2CPayloadType(PendantActionPacket.TYPE, PendantActionPacket.STREAM_CODEC);
-
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, PENDANT_ACTION_ID, (buf, context) -> {
             PendantAction action = buf.readEnum(PendantAction.class);
 
