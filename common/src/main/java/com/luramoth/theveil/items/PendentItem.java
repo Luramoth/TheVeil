@@ -31,9 +31,14 @@ public class PendentItem extends Item implements Accessory {
             for (ResourceKey<Level> dim : data.unlockedDimensions()){
                 String translationKey = "dimension." + dim.location().getNamespace() + "." + dim.location().getPath();
 
-                tooltipComponents.add(Component.literal(" - ")
-                        .append(Component.translatable(translationKey))
-                        .withStyle(ChatFormatting.GRAY));
+                if (dim == data.unlockedDimensions().get(data.selectedIndex())) {
+                    tooltipComponents.add(Component.literal(" -> ")
+                            .append(Component.translatable(translationKey)));
+                } else {
+                    tooltipComponents.add(Component.literal(" - ")
+                            .append(Component.translatable(translationKey))
+                            .withStyle(ChatFormatting.GRAY));
+                }
             }
         } else {
             tooltipComponents.add(Component.translatable("item.the_veil.pendant.inert").withStyle(ChatFormatting.DARK_GRAY).withStyle(ChatFormatting.ITALIC));
