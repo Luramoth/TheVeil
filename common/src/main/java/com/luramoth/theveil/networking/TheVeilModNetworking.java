@@ -38,6 +38,7 @@ public class TheVeilModNetworking {
                 case LAST -> newIndex = (newIndex - 1 + dims.size()) % dims.size();
                 case OPEN_RIFT -> {
                     player.displayClientMessage(Component.translatable("message.the_veil.rift_open").withStyle(ChatFormatting.ITALIC), true);
+                    return;
                 }
             }
 
@@ -64,15 +65,19 @@ public class TheVeilModNetworking {
     }
 
     public static void sendAction(PendantAction action) {
-        NetworkManager.sendToServer(new PendantActionPacket(action));
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeEnum(action);
+        NetworkManager.sendToServer(PENDANT_ACTION_ID, new RegistryFriendlyByteBuf(buf, RegistryAccess.EMPTY));
     }
 
     public static void init() {
         NetworkManager.registerS2CPayloadType(PendantActionPacket.TYPE, PendantActionPacket.STREAM_CODEC);
 
-        NetworkManager.registerReceiver(NetworkManager.Side.C2S, PENDANT_ACTION_ID, (packet, context) -> {
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, PENDANT_ACTION_ID, (buf, context) -> {
+            PendantAction action = buf.readEnum(PendantAction.class);
+
             context.queue(() -> {
-                handleAction((ServerPlayer) context.getPlayer(), packet.readEnum(PendantAction.class));
+                handleAction((ServerPlayer) context.getPlayer(), action);
             });
         });
     }
