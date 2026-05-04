@@ -64,7 +64,7 @@ public class PendantSmithingRecipe implements SmithingRecipe {
 
             if (!dims.contains(newDim)){
                 dims.add(newDim);
-                pendant.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims));
+                pendant.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims, data.selectedIndex()));
             }
         }
         return pendant;

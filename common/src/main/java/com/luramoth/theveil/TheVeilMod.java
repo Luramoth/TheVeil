@@ -3,6 +3,7 @@ package com.luramoth.theveil;
 import com.luramoth.theveil.components.TheVeilModComponents;
 import com.luramoth.theveil.data.CatalystManager;
 import com.luramoth.theveil.items.TheVeilModItems;
+import com.luramoth.theveil.networking.TheVeilModNetworking;
 import com.luramoth.theveil.recipies.TheVeilModRecipes;
 import dev.architectury.registry.ReloadListenerRegistry;
 import net.minecraft.server.packs.PackType;
@@ -20,6 +21,8 @@ public final class TheVeilMod {
         TheVeilModItems.ITEMS.register();
         TheVeilModComponents.COMPONENTS.register();
         TheVeilModRecipes.SERIALISERS.register();
+
+        TheVeilModNetworking.init();
 
         ReloadListenerRegistry.register(PackType.SERVER_DATA, new CatalystManager());
     }

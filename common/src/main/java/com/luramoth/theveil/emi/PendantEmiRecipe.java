@@ -33,7 +33,7 @@ public class PendantEmiRecipe implements EmiRecipe {
         this.catalyst = EmiIngredient.of(List.of(EmiStack.of(BuiltInRegistries.ITEM.get(catalystId))));
 
         ItemStack resultStack = new ItemStack(TheVeilModItems.PENDANT.get());
-        resultStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(List.of(dim)));
+        resultStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(List.of(dim), 0));
         this.output = EmiStack.of(resultStack);
     }
 

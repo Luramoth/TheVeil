@@ -13,5 +13,8 @@
 
   "key.the_veil.next_dimension": "Next Dimension",
   "key.the_veil.last_dimension": "Last Dimension",
-  "key.the_veil.open_rift": "Open Rift"
+  "key.the_veil.open_rift": "Open Rift",
+
+  "message.the_veil.rift_open": "The Veil responds...",
+  "message.the_veil.attuned": "Attuned to: "
 }
