@@ -1,0 +1,9 @@
+{
+  "parent": "the_veil:item/pendant_inert",
+  "overrides": [
+    {
+      "predicate": { "the_veil:has_gem":  1.0 },
+      "model": "the_veil:item/pendant_active"
+    }
+  ]
+}

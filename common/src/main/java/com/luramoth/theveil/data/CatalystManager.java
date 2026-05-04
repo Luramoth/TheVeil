@@ -16,12 +16,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CatalystManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    public static final Map<Item, ResourceKey<Level>> CATALYSTS = new HashMap<>();
+    public static final Map<Item, CatalystData> CATALYSTS = new HashMap<>();
 
     public CatalystManager() {
         super(GSON, "veil_catalysts");
@@ -43,19 +44,35 @@ public class CatalystManager extends SimpleJsonResourceReloadListener {
                 String dimId = json.get("dimension").getAsString();
                 ResourceKey<Level> dimKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimId));
 
-                CATALYSTS.put(item, dimKey);
+                // get color
+                String hexString = json.get("color").getAsString();
+                int color = Integer.parseInt(hexString, 16);
+
+                CATALYSTS.put(item, new CatalystData(dimKey, color));
             } catch (Exception e) {
-                TheVeilMod.LOGGER.error("Error loading catalysts: {e}");
+                TheVeilMod.LOGGER.error("Error loading catalysts: {}", String.valueOf(e));
             }
         });
 
         TheVeilMod.LOGGER.info("Loaded {} veil catalysts.", CATALYSTS.size());
-        CATALYSTS.forEach((item, dim) ->
-                TheVeilMod.LOGGER.info("Catalyst: {} -> {}", item, dim.location())
+        CATALYSTS.forEach((item, catalystData) ->
+                TheVeilMod.LOGGER.info("Catalyst: {} -> {}", item, catalystData.dim().location())
         );
     }
 
     public static ResourceKey<Level> getDimensionFor(Item item) {
-        return CATALYSTS.get(item);
+        return CATALYSTS.get(item).dim();
+    }
+
+    public static int getColorFor(ResourceKey<Level> dimension) {
+        List<CatalystData> values = CATALYSTS.values().stream().toList();
+
+        if (values.isEmpty()) return 0x130134;
+
+        for (int i = 0; i < values.size() - 1; i++) {
+            if (values.get(i).dim() == dimension) return values.get(i).color();
+        }
+
+        return 0x130134;
     }
 }

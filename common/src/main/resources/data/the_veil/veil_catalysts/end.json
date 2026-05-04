@@ -1,4 +1,5 @@
 {
   "item": "minecraft:chorus_fruit",
-  "dimension": "minecraft:the_end"
+  "dimension": "minecraft:the_end",
+  "color": "CC00FF"
 }

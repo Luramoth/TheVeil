@@ -11,9 +11,9 @@ import net.minecraft.resources.ResourceLocation;
 public class TheVeilModEmiPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry emiRegistry) {
-        CatalystManager.CATALYSTS.forEach((item, dim) -> {
+        CatalystManager.CATALYSTS.forEach((item, catalystData) -> {
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
-            emiRegistry.addRecipe(new PendantEmiRecipe(itemId, dim));
+            emiRegistry.addRecipe(new PendantEmiRecipe(itemId, catalystData.dim()));
         });
     }
 }

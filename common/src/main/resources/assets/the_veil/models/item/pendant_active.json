@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "the_veil:item/pendant",
+    "layer1": "the_veil:item/pendant_gem"
+  }
+}
