@@ -29,8 +29,8 @@ public class TheVeilModFluids {
     public static final RegistrySupplier<FlowingFluid> VEILFLUID_FLOWING = FLUIDS.register("flowing_veilfluid",
             () -> new VeilFluid.Flowing(getVeilfluidAttributes()));
     // the physical block
-    public static final RegistrySupplier<LiquidBlock> VEILFLUID_BLOCK = BLOCKS.register("veilfluid_block",
-            () -> new ArchitecturyLiquidBlock(VEILFLUID_SOURCE, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)));
+    public static final RegistrySupplier<LiquidBlock> VEILFLUID_BLOCK = BLOCKS.register("veilfluid", () -> new ArchitecturyLiquidBlock(VEILFLUID_SOURCE, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)));
+
 
     private static ArchitecturyFluidAttributes getVeilfluidAttributes() {
         if (VEILFLUID_ATTRIBUTES == null) {

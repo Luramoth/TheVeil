@@ -12,12 +12,23 @@ public  class VeilFluid {
 
         public Source(ArchitecturyFluidAttributes attributes) {
             super(attributes);
+            this.registerDefaultState(this.getStateDefinition().any().setValue(LEVEL, 8));
         }
 
         @Override
         protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
             super.createFluidStateDefinition(builder);
             builder.add(LEVEL);
+        }
+
+        @Override
+        public int getAmount(FluidState state) {
+            return 8;
+        }
+
+        @Override
+        public boolean isSource(FluidState state) {
+            return true;
         }
     }
 
