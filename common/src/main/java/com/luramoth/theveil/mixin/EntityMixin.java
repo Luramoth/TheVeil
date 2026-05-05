@@ -17,6 +17,7 @@ public abstract class EntityMixin {
     @Inject(method = "isInWater", at = @At("HEAD"), cancellable = true)
     private void the_veil$fakeWaterInVeil(CallbackInfoReturnable<Boolean> cir){
         Entity entity = (Entity) (Object) this;
+
         if (entity.level() != null && entity.level().dimension().equals(TheVeilModDimensions.THE_VEIL_KEY)){
             cir.setReturnValue(true);
         }
