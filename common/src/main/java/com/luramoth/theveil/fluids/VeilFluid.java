@@ -22,19 +22,19 @@ public  class VeilFluid {
         }
 
         @Override
-        public int getAmount(FluidState state) {
-            return 8;
-        }
-
-        @Override
         public boolean isSource(FluidState state) {
-            return true;
+            return this.getStateDefinition().any().getValue(LEVEL) < 8;
         }
     }
 
     public static class Flowing extends ArchitecturyFlowingFluid.Flowing {
         public Flowing(ArchitecturyFluidAttributes attributes) {
             super(attributes);
+        }
+
+        @Override
+        public boolean isSource(FluidState state) {
+            return this.getStateDefinition().any().getValue(LEVEL) < 8;
         }
     }
 }

@@ -29,19 +29,22 @@ public class TheVeilModFluids {
     public static final RegistrySupplier<FlowingFluid> VEILFLUID_FLOWING = FLUIDS.register("flowing_veilfluid",
             () -> new VeilFluid.Flowing(getVeilfluidAttributes()));
     // the physical block
-    public static final RegistrySupplier<LiquidBlock> VEILFLUID_BLOCK = BLOCKS.register("veilfluid", () -> new ArchitecturyLiquidBlock(VEILFLUID_SOURCE, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)));
+    public static final RegistrySupplier<LiquidBlock> VEILFLUID_BLOCK = BLOCKS.register("veilfluid_block",
+            () -> new ArchitecturyLiquidBlock(VEILFLUID_SOURCE, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).noLootTable()));
 
 
     private static ArchitecturyFluidAttributes getVeilfluidAttributes() {
         if (VEILFLUID_ATTRIBUTES == null) {
             VEILFLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(
-                            () -> TheVeilModFluids.VEILFLUID_SOURCE,
-                            () -> TheVeilModFluids.VEILFLUID_FLOWING
+                            () -> VEILFLUID_SOURCE,
+                            () -> VEILFLUID_FLOWING
                     )
-                    .block(TheVeilModFluids.VEILFLUID_BLOCK)
+                    .block(VEILFLUID_BLOCK)
                     .color(0xFF130134)
                     .sourceTexture(ResourceLocation.parse("minecraft:block/water_still"))
                     .flowingTexture(ResourceLocation.parse("minecraft:block/water_flow"))
+                    .convertToSource(false)
+                    .dropOff(4)
                     .density(2500)
                     .viscosity(4500)
                     .tickDelay(20);
