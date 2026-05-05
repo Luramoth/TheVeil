@@ -19,11 +19,11 @@ public final class TheVeilMod {
     public static void init() {
         LOGGER.info("Mod loader is entering The Veil...");
 
+        TheVeilModFluids.FLUIDS.register();
+        TheVeilModFluids.BLOCKS.register();
         TheVeilModItems.ITEMS.register();
         TheVeilModComponents.COMPONENTS.register();
         TheVeilModRecipes.SERIALISERS.register();
-        TheVeilModFluids.FLUIDS.register();
-        TheVeilModFluids.BLOCKS.register();
 
         TheVeilModNetworking.init();
 
