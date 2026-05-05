@@ -25,11 +25,5 @@ public  class VeilFluid {
         public Flowing(ArchitecturyFluidAttributes attributes) {
             super(attributes);
         }
-
-        @Override
-        protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
-            super.createFluidStateDefinition(builder);
-            builder.add(LEVEL);
-        }
     }
 }
