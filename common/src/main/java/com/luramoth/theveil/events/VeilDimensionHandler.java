@@ -15,18 +15,19 @@ public class VeilDimensionHandler {
     }
 
     private static void simulateVeilfluid(Player player) {
-        player.setSwimming(true);
-
-        Vec3 velocity = player.getDeltaMovement();
-
-        double drag = 0.5;
-
-        player.setDeltaMovement(
-                velocity.x * drag,
-                velocity.y * drag,
-                velocity.z * drag
-        );
-
-        player.setAirSupply(player.getMaxAirSupply());
+//        player.setSwimming(true);
+//
+//
+//        Vec3 velocity = player.getDeltaMovement();
+//
+//        double drag = 0.5;
+//
+//        player.setDeltaMovement(
+//                velocity.x * drag,
+//                velocity.y * drag,
+//                velocity.z * drag
+//        );
+//
+//        player.setAirSupply(player.getMaxAirSupply());
     }
 }
