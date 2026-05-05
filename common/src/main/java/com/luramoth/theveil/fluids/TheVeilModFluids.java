@@ -8,6 +8,7 @@ import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -39,8 +40,11 @@ public class TheVeilModFluids {
                     )
                     .block(TheVeilModFluids.VEILFLUID_BLOCK)
                     .color(0xFF130134)
+                    .sourceTexture(ResourceLocation.parse("minecraft:block/water_still"))
+                    .flowingTexture(ResourceLocation.parse("minecraft:block/water_flow"))
                     .density(2500)
-                    .viscosity(4500);
+                    .viscosity(4500)
+                    .tickDelay(20);
         }
         return VEILFLUID_ATTRIBUTES;
     }
