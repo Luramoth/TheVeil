@@ -2,15 +2,18 @@ package com.luramoth.theveil.client;
 
 import com.luramoth.theveil.TheVeilMod;
 import com.luramoth.theveil.TheVeilModKeybinds;
+import com.luramoth.theveil.client.effects.VeilDimensionEffects;
 import com.luramoth.theveil.client.renderer.PendantRenderer;
 import com.luramoth.theveil.components.PendantData;
 import com.luramoth.theveil.components.TheVeilModComponents;
 import com.luramoth.theveil.items.TheVeilModItems;
+import com.luramoth.theveil.mixin.client.DimensionSpecialEffectsAccessor;
 import com.luramoth.theveil.networking.PendantAction;
 import com.luramoth.theveil.networking.TheVeilModNetworking;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -39,6 +42,11 @@ public class TheVeilModClient {
                     PendantData data = stack.get(TheVeilModComponents.PENDENT_DATA.get());
                     return (data != null && !data.unlockedDimensions().isEmpty()) ? 1.0f : 0.0f;
                 });
+
+        DimensionSpecialEffectsAccessor.getEffects().put(
+                ResourceLocation.fromNamespaceAndPath(TheVeilMod.MOD_ID, "the_veil_effects"),
+                new VeilDimensionEffects()
+        );
 
         AccessoriesRendererRegistry.registerRenderer((Item) TheVeilModItems.PENDANT.get(), PendantRenderer::new);
     }

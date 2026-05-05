@@ -11,7 +11,7 @@
   "ambient_light": 0.1,
   "fixed_time": 0,
   "logical_height": 0,
-  "effects": "minecraft:overworld",
+  "effects": "the_veil:the_veil_effects",
   "infiniburn": "#minecraft:infiniburn_overworld",
   "min_y": 0,
   "height": 16,
