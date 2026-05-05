@@ -19,24 +19,29 @@ public class TheVeilModFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(TheVeilMod.MOD_ID, Registries.FLUID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TheVeilMod.MOD_ID, Registries.BLOCK);
 
-    public static final ArchitecturyFluidAttributes VEILFLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(
-                    () -> TheVeilModFluids.VEILFLUID_SOURCE,
-                    () -> TheVeilModFluids.VEILFLUID_FLOWING
-            )
-            .block(TheVeilModFluids.VEILFLUID_BLOCK)
-            .color(0xFF130134)
-            .density(2500)
-            .viscosity(4500)
-            .slopeFindDistance(2)
-            .dropOff(2);
+    public static ArchitecturyFluidAttributes VEILFLUID_ATTRIBUTES;
 
     // fluid source
     public static final RegistrySupplier<FlowingFluid> VEILFLUID_SOURCE = FLUIDS.register("veilfluid",
-            () -> new ArchitecturyFlowingFluid.Source(VEILFLUID_ATTRIBUTES));
+            () -> new VeilFluid.Source(getVeilfluidAttributes()));
     // the fluid itself (flowing)
     public static final RegistrySupplier<FlowingFluid> VEILFLUID_FLOWING = FLUIDS.register("flowing_veilfluid",
-            () -> new ArchitecturyFlowingFluid.Flowing(VEILFLUID_ATTRIBUTES));
+            () -> new VeilFluid.Flowing(getVeilfluidAttributes()));
     // the physical block
     public static final RegistrySupplier<LiquidBlock> VEILFLUID_BLOCK = BLOCKS.register("veilfluid_block",
             () -> new ArchitecturyLiquidBlock(VEILFLUID_SOURCE, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)));
+
+    private static ArchitecturyFluidAttributes getVeilfluidAttributes() {
+        if (VEILFLUID_ATTRIBUTES == null) {
+            VEILFLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(
+                            () -> TheVeilModFluids.VEILFLUID_SOURCE,
+                            () -> TheVeilModFluids.VEILFLUID_FLOWING
+                    )
+                    .block(TheVeilModFluids.VEILFLUID_BLOCK)
+                    .color(0xFF130134)
+                    .density(2500)
+                    .viscosity(4500);
+        }
+        return VEILFLUID_ATTRIBUTES;
+    }
 }
