@@ -21,22 +21,29 @@ public class TheVeilModFluids {
 
     // fluid source
     public static final RegistrySupplier<FlowingFluid> VEILFLUID_SOURCE = FLUIDS.register("veilfluid",
-            () -> new ArchitecturyFlowingFluid.Source(TheVeilModFluids.VEILFLUID_PROPERTIES));
+            () -> new ArchitecturyFlowingFluid.Source(getAttributes()));
     // the fluid itself (flowing)
     public static final RegistrySupplier<FlowingFluid> VEILFLUID_FLOWING = FLUIDS.register("flowing_veilfluid",
-            () -> new ArchitecturyFlowingFluid.Flowing(TheVeilModFluids.VEILFLUID_PROPERTIES));
+            () -> new ArchitecturyFlowingFluid.Flowing(getAttributes()));
     // the physical block
     public static final RegistrySupplier<LiquidBlock> VEILFLUID_BLOCK = BLOCKS.register("veilfluid_block",
             () -> new LiquidBlock(VEILFLUID_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).noLootTable()));
-    // properties
-    public static final ArchitecturyFluidAttributes VEILFLUID_PROPERTIES = SimpleArchitecturyFluidAttributes.of(
-            VEILFLUID_SOURCE,
-            VEILFLUID_FLOWING
-    )
-            .block(VEILFLUID_BLOCK)
-            .color(0xFF130134)
-            .density(2500)
-            .viscosity(4500)
-            .slopeFindDistance(2)
-            .dropOff(2);
+
+    private static SimpleArchitecturyFluidAttributes attributes;
+
+    private static SimpleArchitecturyFluidAttributes getAttributes() {
+        if (attributes == null) {
+            attributes = SimpleArchitecturyFluidAttributes.of(
+                            VEILFLUID_SOURCE::get,
+                            VEILFLUID_FLOWING::get
+                    )
+                    .block(VEILFLUID_BLOCK)
+                    .color(0xFF130134)
+                    .density(2500)
+                    .viscosity(4500)
+                    .slopeFindDistance(2)
+                    .dropOff(2);
+        }
+        return attributes;
+    }
 }
