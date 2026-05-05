@@ -1,0 +1,10 @@
+{
+  "type": "the_veil:the_veil_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "layers": [],
+      "biome": "minecraft:the_void"
+    }
+  }
+}

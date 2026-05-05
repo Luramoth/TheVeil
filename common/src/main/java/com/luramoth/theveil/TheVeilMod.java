@@ -2,10 +2,11 @@ package com.luramoth.theveil;
 
 import com.luramoth.theveil.components.TheVeilModComponents;
 import com.luramoth.theveil.data.CatalystManager;
-import com.luramoth.theveil.fluids.TheVeilModFluids;
+import com.luramoth.theveil.events.VeilDimensionHandler;
 import com.luramoth.theveil.items.TheVeilModItems;
 import com.luramoth.theveil.networking.TheVeilModNetworking;
 import com.luramoth.theveil.recipies.TheVeilModRecipes;
+import com.luramoth.theveil.worldgen.TheVeilModDimensions;
 import dev.architectury.registry.ReloadListenerRegistry;
 import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
@@ -19,13 +20,12 @@ public final class TheVeilMod {
     public static void init() {
         LOGGER.info("Mod loader is entering The Veil...");
 
-        TheVeilModFluids.FLUIDS.register();
-        TheVeilModFluids.BLOCKS.register();
         TheVeilModItems.ITEMS.register();
         TheVeilModComponents.COMPONENTS.register();
         TheVeilModRecipes.SERIALISERS.register();
 
         TheVeilModNetworking.init();
+        VeilDimensionHandler.init();
 
         ReloadListenerRegistry.register(PackType.SERVER_DATA, new CatalystManager());
     }
