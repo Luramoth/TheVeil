@@ -1,6 +1,7 @@
 package com.luramoth.theveil.events;
 
 import com.luramoth.theveil.TheVeilMod;
+import com.luramoth.theveil.mixin.LivingEntityAccessor;
 import com.luramoth.theveil.worldgen.TheVeilModDimensions;
 import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.core.particles.ParticleTypes;
@@ -33,9 +34,13 @@ public class VeilDimensionHandler {
         double drag = 0.9;
         double buoyancy = 0.01;
 
+        boolean isJumping = ((LivingEntityAccessor) player).isJumping();
+
+        double lift = ((LivingEntityAccessor) player).isJumping() ? 0.08 : 0;
+
         player.setDeltaMovement(
                 velocity.x * drag,
-                velocity.y * drag + buoyancy,
+                velocity.y * drag + buoyancy + lift,
                 velocity.z * drag
         );
 
@@ -43,7 +48,7 @@ public class VeilDimensionHandler {
     }
 
     private static void spawnAmbientParticles(Player player) {
-        for (int i =0; i < 3; i++) {
+        for (int i =0; i < 5; i++) {
             double x = player.getX() + (RANDOM.nextDouble() -0.5) * 16;
             double y = player.getY() + (RANDOM.nextDouble() -0.5) * 16;
             double z = player.getZ() + (RANDOM.nextDouble() -0.5) * 16;

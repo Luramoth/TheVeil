@@ -11,7 +11,7 @@ public class VeilDimensionEffects extends DimensionSpecialEffects {
 
     @Override
     public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
-        return new Vec3(0.0210, 0.00, 0.0700);
+        return new Vec3(0.16, 0.02,  0.38);
     }
 
     @Override

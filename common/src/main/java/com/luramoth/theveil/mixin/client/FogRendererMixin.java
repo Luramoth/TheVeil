@@ -27,13 +27,12 @@ public class FogRendererMixin {
             float pitch = activeRenderInfo.getXRot();
 
             float factor = (pitch + 90.0f) / 180.0f;
-            float brightness = 1.2f - (factor * 0.8f);
 
-            RenderSystem.clearColor(
-                    0.0210f * brightness,
-                    0.00f * brightness,
-                    0.0700f * brightness,
-                    1.0f);
+            float r = 0.16f + factor * (0.02f - 0.16f);
+            float g = 0.02f + factor * (0.00f - 0.02f);
+            float b = 0.38f + factor * (0.06f - 0.38f);
+
+            RenderSystem.clearColor(r,g,b, 1.0f);
         }
     }
 }

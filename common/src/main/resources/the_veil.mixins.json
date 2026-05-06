@@ -5,10 +5,12 @@
   "minVersion": "0.8",
   "client": [
     "client.DimensionSpecialEffectsAccessor",
-    "client.FogRendererMixin"
+    "client.FogRendererMixin",
+    "client.VeilSkyMixin"
   ],
   "mixins": [
-    "EntityMixin"
+    "EntityMixin",
+    "LivingEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
