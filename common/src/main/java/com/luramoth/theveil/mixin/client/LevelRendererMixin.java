@@ -1,6 +1,5 @@
 package com.luramoth.theveil.mixin.client;
 
-import com.luramoth.theveil.TheVeilMod;
 import com.luramoth.theveil.worldgen.TheVeilModDimensions;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -19,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelRenderer.class)
-public abstract class VeilSkyMixin {
+public abstract class LevelRendererMixin {
 
     @Shadow
     @Nullable

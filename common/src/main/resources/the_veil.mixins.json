@@ -6,11 +6,12 @@
   "client": [
     "client.DimensionSpecialEffectsAccessor",
     "client.FogRendererMixin",
-    "client.VeilSkyMixin"
+    "client.LevelRendererMixin"
   ],
   "mixins": [
     "EntityMixin",
-    "LivingEntityAccessor"
+    "LivingEntityAccessor",
+    "CombatTrackerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

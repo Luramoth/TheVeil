@@ -16,5 +16,7 @@
   "key.the_veil.open_rift": "Open Rift",
 
   "message.the_veil.rift_open": "The Veil responds...",
-  "message.the_veil.attuned": "Attuned to: "
+  "message.the_veil.attuned": "Attuned to: ",
+
+  "death.attack.the_veil.pressure": "%1$s couldn't handle the pressure"
 }
