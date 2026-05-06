@@ -1,5 +1,6 @@
 package com.luramoth.theveil.mixin.client;
 
+import com.luramoth.theveil.TheVeilMod;
 import com.luramoth.theveil.worldgen.TheVeilModDimensions;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -7,10 +8,12 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,7 +28,7 @@ public abstract class VeilSkyMixin {
     @Inject(method = "renderSky", at = @At("HEAD"), cancellable = true)
     private void the_veil$renderVeilSky(Matrix4f  frustumMatrix, Matrix4f projectionMatrix, float partialTick, Camera camera, boolean isFoggy, Runnable skyFogSetup, CallbackInfo ci) {
         if (this.level != null && this.level.dimension().equals(TheVeilModDimensions.THE_VEIL_KEY)) {
-            renderGradientSky(frustumMatrix);
+            the_veil$renderGradientSky(frustumMatrix, camera.getPosition().y);
             ci.cancel();
         }
     }
@@ -38,17 +41,20 @@ public abstract class VeilSkyMixin {
     }
 
     // makes a giant cylinder around the player and let vertex colors make the gradient
-    private void renderGradientSky(Matrix4f matrix) {
+    @Unique
+    private void the_veil$renderGradientSky(Matrix4f matrix, double camY) {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        // top vertex colors
-        float tr = 0.0210f, tg = 0.02f, tb = 0.06f, ta = 0.0700f;
-        // bottom vertex colors
-        float br = 0.02f, bg = 0.00f, bb = 0.06f, ba = 1.0f;
-
         float size = 150.0f;
         int segments = 16;
+        float altitudeFactor = (float) ((camY + 20) / 200);
+        altitudeFactor = Mth.clamp(altitudeFactor, 0.0f, 1.5f);
+
+        // top vertex colors
+        float tr = 0.16f * altitudeFactor, tg = 0.02f * altitudeFactor, tb = 0.38f * altitudeFactor, ta = 1.0f;
+        // bottom vertex colors
+        float br = 0.02f * altitudeFactor, bg = 0.00f * altitudeFactor, bb = 0.06f * altitudeFactor, ba = 1.0f;
 
         for (int i = 0; i < segments; i++) {
             double angle1 = (i * 2 * Math.PI) / segments;
