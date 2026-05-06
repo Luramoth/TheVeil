@@ -5,6 +5,7 @@ import com.luramoth.theveil.components.PendantData;
 import com.luramoth.theveil.components.TheVeilModComponents;
 import com.luramoth.theveil.items.PendentItem;
 import com.luramoth.theveil.items.TheVeilModItems;
+import com.luramoth.theveil.worldgen.TheVeilModDimensions;
 import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
 import io.wispforest.accessories.api.AccessoriesCapability;
@@ -15,6 +16,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -37,7 +39,27 @@ public class TheVeilModNetworking {
                 case NEXT -> newIndex = (newIndex + 1) % dims.size();
                 case LAST -> newIndex = (newIndex - 1 + dims.size()) % dims.size();
                 case OPEN_RIFT -> {
-                    player.displayClientMessage(Component.translatable("message.the_veil.rift_open").withStyle(ChatFormatting.ITALIC), true);
+                    ResourceKey<Level> currentDim = player.level().dimension();
+                    ResourceKey<Level> targetDim = dims.get(data.selectedIndex());
+
+                    ServerLevel targetWorld;
+                    if (currentDim.equals(TheVeilModDimensions.THE_VEIL_KEY)) {
+                        targetWorld = player.server.getLevel(targetDim);
+                    } else {
+                        targetWorld = player.server.getLevel(TheVeilModDimensions.THE_VEIL_KEY);
+                    }
+
+                    if (targetWorld != null) {
+                        player.teleportTo(
+                                targetWorld,
+                                player.getX(),
+                                player.getY(),
+                                player.getZ(),
+                                player.getYRot(),
+                                player.getXRot()
+                        );
+                    }
+
                     return;
                 }
             }
