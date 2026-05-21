@@ -13,7 +13,6 @@ import com.luramoth.theveil.networking.TheVeilModNetworking;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 

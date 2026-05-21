@@ -9,7 +9,6 @@ import com.luramoth.theveil.worldgen.TheVeilModDimensions;
 import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
 import io.wispforest.accessories.api.AccessoriesCapability;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -18,6 +17,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -36,8 +37,14 @@ public class TheVeilModNetworking {
 
             int newIndex = data.selectedIndex();
             switch (action) {
-                case NEXT -> newIndex = (newIndex + 1) % dims.size();
-                case LAST -> newIndex = (newIndex - 1 + dims.size()) % dims.size();
+                case NEXT -> {
+                    newIndex = (newIndex + 1) % dims.size();
+                    player.playNotifySound(SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.4f, 1.6f);
+                }
+                case LAST -> {
+                    newIndex = (newIndex - 1 + dims.size()) % dims.size();
+                    player.playNotifySound(SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.4f, 1.3f);
+                }
                 case OPEN_RIFT -> {
                     ResourceKey<Level> currentDim = player.level().dimension();
                     ResourceKey<Level> targetDim = dims.get(data.selectedIndex());
@@ -59,6 +66,7 @@ public class TheVeilModNetworking {
                                 player.getXRot()
                         );
                     }
+                    player.playNotifySound(SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 1.0f, 0.5f);
 
                     return;
                 }
