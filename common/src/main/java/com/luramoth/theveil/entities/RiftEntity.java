@@ -96,9 +96,6 @@ public class RiftEntity extends Entity {
                     for (Player traveler : travelingPlayers) {
                         if (traveler instanceof ServerPlayer serverTraveller) {
                             ServerLevel destLevel = serverTraveller.server.getLevel(this.destinationDim);
-                            TheVeilMod.LOGGER.info("dest dim: " + this.destinationDim);
-                            TheVeilMod.LOGGER.info("dest level dim: " + destLevel.dimension());
-                            TheVeilMod.LOGGER.info("is exit rift:" + this.isExitRift());
                             if (destLevel == null) break;
 
                             serverTraveller.teleportTo(

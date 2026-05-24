@@ -63,14 +63,11 @@ public class TheVeilModNetworking {
 
                     Vec3 spawnPos = player.position().add(player.getLookAngle().scale(2.0));
 
-                    TheVeilMod.LOGGER.info(spawnPos.toString());
-                    TheVeilMod.LOGGER.info(targetWorld.dimension().toString());
-
                     if (targetWorld == null) return;
 
                     // spawning departure rift
                     RiftEntity localRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.level());
-                    localRift.setDestination(targetDim);
+                    localRift.setDestination(targetWorld.dimension());
                     localRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
                     player.level().addFreshEntity(localRift);
 
