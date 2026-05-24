@@ -43,6 +43,11 @@ public class RiftEntity extends Entity {
     public void tick() {
         super.tick();
 
+        if (this.isExitRift() && parentRift == null)
+            this.setState(RiftState.CLOSING);
+        else if (this.isExitRift())
+            TheVeilMod.LOGGER.info("parent rift still alive");
+
         if (this.level().isClientSide) {
             for (int i = 0; i <3; i++) {
                 double offsetX = (this.random.nextDouble() - 0.5) * 2.0;
@@ -67,14 +72,10 @@ public class RiftEntity extends Entity {
                         break;
                     }
 
-                    if (this.isExitRift()) {
-                        if (parentRift.getState() == RiftState.ACTIVE)
-                            this.ticks++;
-                    }else {
-                        checkDestinationReady(level);
-                        if (this.isDestinationLoaded && !this.isExitRift())
-                            this.ticks++;
-                    }
+                    checkDestinationReady(level);
+
+                    if (this.isDestinationLoaded || this.isExitRift() && this.parentRift.getState() == RiftState.OPENING)
+                        this.ticks++;
                 }
                 case ACTIVE -> {
                     if (this.isExitRift()) {
