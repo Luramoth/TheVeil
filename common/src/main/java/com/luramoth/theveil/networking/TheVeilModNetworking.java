@@ -1,8 +1,12 @@
 package com.luramoth.theveil.networking;
 
 import com.luramoth.theveil.TheVeilMod;
+import com.luramoth.theveil.Utils.Axis;
+import com.luramoth.theveil.Utils.VecUtils;
 import com.luramoth.theveil.components.PendantData;
 import com.luramoth.theveil.components.TheVeilModComponents;
+import com.luramoth.theveil.entities.RiftEntity;
+import com.luramoth.theveil.entities.TheVeilModEntities;
 import com.luramoth.theveil.items.PendentItem;
 import com.luramoth.theveil.items.TheVeilModItems;
 import com.luramoth.theveil.worldgen.TheVeilModDimensions;
@@ -21,6 +25,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -56,17 +61,24 @@ public class TheVeilModNetworking {
                         targetWorld = player.server.getLevel(TheVeilModDimensions.THE_VEIL_KEY);
                     }
 
-                    if (targetWorld != null) {
-                        player.teleportTo(
-                                targetWorld,
-                                player.getX(),
-                                player.getY(),
-                                player.getZ(),
-                                player.getYRot(),
-                                player.getXRot()
-                        );
-                    }
-                    player.playNotifySound(SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 1.0f, 0.5f);
+                    Vec3 spawnPos = player.position().add(player.getLookAngle().scale(2.0));
+
+                    TheVeilMod.LOGGER.info(spawnPos.toString());
+                    TheVeilMod.LOGGER.info(targetWorld.dimension().toString());
+
+                    if (targetWorld == null) return;
+
+                    // spawning departure rift
+                    RiftEntity localRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.level());
+                    localRift.setDestination(targetDim);
+                    localRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
+                    player.level().addFreshEntity(localRift);
+
+                    // spawning of exit rift
+                    RiftEntity exitRift = new RiftEntity(TheVeilModEntities.RIFT.get(), targetWorld);
+                    exitRift.setParentRift(localRift);
+                    localRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
+                    targetWorld.addFreshEntity(exitRift);
 
                     return;
                 }

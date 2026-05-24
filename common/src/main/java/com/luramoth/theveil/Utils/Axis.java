@@ -1,0 +1,7 @@
+package com.luramoth.theveil.Utils;
+
+public enum Axis {
+    X,
+    Y,
+    Z
+}

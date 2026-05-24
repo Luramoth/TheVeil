@@ -2,6 +2,7 @@ package com.luramoth.theveil;
 
 import com.luramoth.theveil.components.TheVeilModComponents;
 import com.luramoth.theveil.data.CatalystManager;
+import com.luramoth.theveil.entities.TheVeilModEntities;
 import com.luramoth.theveil.events.VeilDimensionHandler;
 import com.luramoth.theveil.items.TheVeilModItems;
 import com.luramoth.theveil.networking.TheVeilModNetworking;
@@ -23,6 +24,7 @@ public final class TheVeilMod {
         TheVeilModItems.ITEMS.register();
         TheVeilModComponents.COMPONENTS.register();
         TheVeilModRecipes.SERIALISERS.register();
+        TheVeilModEntities.ENTITIES.register();
 
         TheVeilModNetworking.init();
         VeilDimensionHandler.init();

@@ -4,13 +4,16 @@ import com.luramoth.theveil.TheVeilMod;
 import com.luramoth.theveil.TheVeilModKeybinds;
 import com.luramoth.theveil.client.effects.VeilDimensionEffects;
 import com.luramoth.theveil.client.renderer.PendantRenderer;
+import com.luramoth.theveil.client.renderer.RiftRenderer;
 import com.luramoth.theveil.components.PendantData;
 import com.luramoth.theveil.components.TheVeilModComponents;
+import com.luramoth.theveil.entities.TheVeilModEntities;
 import com.luramoth.theveil.items.TheVeilModItems;
 import com.luramoth.theveil.mixin.client.DimensionSpecialEffectsAccessor;
 import com.luramoth.theveil.networking.PendantAction;
 import com.luramoth.theveil.networking.TheVeilModNetworking;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +36,9 @@ public class TheVeilModClient {
                 TheVeilModNetworking.sendAction(PendantAction.OPEN_RIFT);
             }
         });
+
+        // Rift Renderer
+        EntityRendererRegistry.register(TheVeilModEntities.RIFT, RiftRenderer::new);
 
         // Pendant appearence
         ItemPropertiesRegistry.register(TheVeilModItems.PENDANT.get(),
