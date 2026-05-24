@@ -32,8 +32,6 @@ public class RiftEntity extends Entity {
 
     public RiftEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
-        if (this.isExitRift())
-            destinationDim = this.parentRift.level().dimension();
     }
 
     @Override
@@ -135,7 +133,10 @@ public class RiftEntity extends Entity {
 
     public void setDestination(ResourceKey<Level> dim) {this.destinationDim = dim;}
 
-    public void setParentRift(RiftEntity rift) {this.parentRift = rift;}
+    public void setParentRift(RiftEntity rift) {
+        this.parentRift = rift;
+        this.destinationDim = rift.level().dimension();
+    }
 
     public boolean isExitRift() {return parentRift != null;}
 

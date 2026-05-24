@@ -77,7 +77,7 @@ public class TheVeilModNetworking {
                     // spawning of exit rift
                     RiftEntity exitRift = new RiftEntity(TheVeilModEntities.RIFT.get(), targetWorld);
                     exitRift.setParentRift(localRift);
-                    localRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
+                    exitRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
                     targetWorld.addFreshEntity(exitRift);
 
                     return;
