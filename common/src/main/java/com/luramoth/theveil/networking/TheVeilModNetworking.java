@@ -28,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TheVeilModNetworking {
     public static final ResourceLocation PENDANT_ACTION_ID = ResourceLocation.fromNamespaceAndPath(TheVeilMod.MOD_ID, "pendant_action");
@@ -51,37 +52,52 @@ public class TheVeilModNetworking {
                     player.playNotifySound(SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.4f, 1.3f);
                 }
                 case OPEN_RIFT -> {
+                    if (data.outboundRiftId().isPresent())
+                        return;
+
                     ResourceKey<Level> currentDim = player.level().dimension();
                     ResourceKey<Level> targetDim = dims.get(data.selectedIndex());
 
-                    ServerLevel targetWorld;
+                    ResourceKey<Level> exitDim;
                     if (currentDim.equals(TheVeilModDimensions.THE_VEIL_KEY)) {
-                        targetWorld = player.server.getLevel(targetDim);
+                        exitDim = targetDim;
                     } else {
-                        targetWorld = player.server.getLevel(TheVeilModDimensions.THE_VEIL_KEY);
+                        exitDim = TheVeilModDimensions.THE_VEIL_KEY;
                     }
 
-                    Vec3 spawnPos = player.position().add(player.getLookAngle().scale(2.0));
+                    Vec3 spawnPos = player.position().add(player.getLookAngle().scale(3.5));
 
-                    if (targetWorld == null) return;
+                    if (exitDim == null) return;
 
                     // spawning departure rift
-                    RiftEntity localRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.level());
-                    localRift.setDestination(targetWorld.dimension());
-                    localRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
-                    player.level().addFreshEntity(localRift);
+                    RiftEntity departingRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.level());
+                    departingRift.setDestination(exitDim);
+                    departingRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
+                    player.level().addFreshEntity(departingRift);
 
                     // spawning of exit rift
-                    RiftEntity exitRift = new RiftEntity(TheVeilModEntities.RIFT.get(), targetWorld);
-                    exitRift.setParentRift(localRift);
+                    RiftEntity exitRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.server.getLevel(exitDim));
+                    exitRift.setParentRift(departingRift);
                     exitRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
-                    targetWorld.addFreshEntity(exitRift);
+                    player.server.getLevel(exitDim).addFreshEntity(exitRift);
+
+                    PendantData newData = new PendantData(
+                            dims,
+                            data.selectedIndex(),
+                            Optional.of(departingRift.getUUID()),
+                            Optional.of(currentDim),
+                            Optional.of(exitRift.getUUID()),
+                            Optional.of(exitDim)
+                    );
+                    stack.set(TheVeilModComponents.PENDENT_DATA.get(), newData);
 
                     return;
                 }
             }
 
-            stack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims, newIndex));
+            stack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims, newIndex,
+                    data.outboundRiftId(), data.outboundRiftDim(),
+                    data.exitRiftId(), data.exitRiftDim()));
 
             ResourceKey<Level> dim = dims.get(newIndex);
             String translationKey = "dimension." + dim.location().getNamespace() + "." + dim.location().getPath();

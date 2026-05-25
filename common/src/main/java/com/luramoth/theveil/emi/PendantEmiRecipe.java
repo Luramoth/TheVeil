@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PendantEmiRecipe implements EmiRecipe {
     private final ResourceLocation id;
@@ -33,7 +34,9 @@ public class PendantEmiRecipe implements EmiRecipe {
         this.catalyst = EmiIngredient.of(List.of(EmiStack.of(BuiltInRegistries.ITEM.get(catalystId))));
 
         ItemStack resultStack = new ItemStack(TheVeilModItems.PENDANT.get());
-        resultStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(List.of(dim), 0));
+        resultStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(List.of(dim), 0,
+                Optional.empty(),Optional.empty(),
+                Optional.empty(),Optional.empty()));
         this.output = EmiStack.of(resultStack);
     }
 

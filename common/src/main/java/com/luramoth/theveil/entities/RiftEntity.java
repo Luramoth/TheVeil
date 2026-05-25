@@ -27,6 +27,7 @@ public class RiftEntity extends Entity {
 
     private ResourceKey<Level> destinationDim;
     private int ticks = 0;
+    private boolean countingTicks = false;
     private boolean isDestinationLoaded = false;
     private RiftEntity parentRift;
 
@@ -63,67 +64,32 @@ public class RiftEntity extends Entity {
                 );
             }
         } else {
-            ServerLevel level = (ServerLevel) this.level();
+            if (this.getState() == RiftState.ACTIVE) {
+                List<Player> travelingPlayers = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(0.5f));
+                for (Player traveler : travelingPlayers) {
+                    if (traveler instanceof ServerPlayer serverTraveller) {
+                        ServerLevel destLevel = serverTraveller.server.getLevel(this.destinationDim);
+                        if (destLevel == null) break;
 
-            switch (getState()) {
-                case OPENING -> {
-                    if (this.ticks == 20) {
-                        this.setState(RiftState.ACTIVE);
-                        break;
+                        serverTraveller.teleportTo(
+                                destLevel,
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                serverTraveller.getYRot(),
+                                serverTraveller.getXRot()
+                        );
+                        destLevel.playSound(
+                                null,
+                                this.getX(),
+                                this.getY(),
+                                this.getZ(),
+                                SoundEvents.PORTAL_TRAVEL,
+                                SoundSource.AMBIENT,
+                                1.0f,
+                                0.5f
+                        );
                     }
-
-                    checkDestinationReady(level);
-
-                    if (this.isDestinationLoaded || this.isExitRift() && this.parentRift.getState() == RiftState.OPENING)
-                        this.ticks++;
-                }
-                case ACTIVE -> {
-                    if (this.isExitRift()) {
-                        if (parentRift.getState() == RiftState.CLOSING)
-                            this.setState(RiftState.CLOSING);
-                        break;
-                    }
-                    if (this.getPotentialTravelers().isEmpty()){
-                        this.ticks++;
-                        if (this.ticks == 40){
-                            this.setState(RiftState.CLOSING);
-                            this.ticks = 0;
-                        }
-                        break;
-                    }
-                    this.ticks = 0;
-
-                    List<Player> travelingPlayers = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(0.5f));
-                    for (Player traveler : travelingPlayers) {
-                        if (traveler instanceof ServerPlayer serverTraveller) {
-                            ServerLevel destLevel = serverTraveller.server.getLevel(this.destinationDim);
-                            if (destLevel == null) break;
-
-                            serverTraveller.teleportTo(
-                                    destLevel,
-                                    this.getX(),
-                                    this.getY(),
-                                    this.getZ(),
-                                    serverTraveller.getYRot(),
-                                    serverTraveller.getXRot()
-                            );
-                            destLevel.playSound(
-                                    null,
-                                    this.getX(),
-                                    this.getY(),
-                                    this.getZ(),
-                                    SoundEvents.PORTAL_TRAVEL,
-                                    SoundSource.AMBIENT,
-                                    1.0f,
-                                    0.5f
-                            );
-                        }
-                    }
-                }
-                case CLOSING -> {
-                    this.ticks++;
-                    if (this.ticks == 20)
-                        this.discard();
                 }
             }
         }
@@ -138,37 +104,8 @@ public class RiftEntity extends Entity {
 
     public boolean isExitRift() {return parentRift != null;}
 
-    private List<Player> getPotentialTravelers() {
+    public List<Player> getPotentialTravelers() {
         return this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(10));
-    }
-
-    private void checkDestinationReady (ServerLevel currentLevel) {
-        if (destinationDim == null) return;
-
-        ServerLevel destLevel = currentLevel.getServer().getLevel(destinationDim);
-        if (destLevel != null) {
-            ChunkPos chunkPos = new ChunkPos(this.blockPosition());
-
-            destLevel.setChunkForced(chunkPos.x, chunkPos.z, true);
-
-            if (destLevel.isPositionEntityTicking(this.blockPosition())) {
-                this.isDestinationLoaded = true;
-            }
-        }
-    }
-
-    @Override
-    public void onClientRemoval() {
-        if ( !this.level().isClientSide){
-            if (destinationDim == null) return;
-
-            ServerLevel level = Objects.requireNonNull(this.level().getServer()).getLevel(destinationDim);
-            ChunkPos chunkPos = new ChunkPos(this.blockPosition());
-
-            assert level != null;
-            level.setChunkForced(chunkPos.x, chunkPos.z, false);
-        }
-        super.onClientRemoval();
     }
 
     @Override
