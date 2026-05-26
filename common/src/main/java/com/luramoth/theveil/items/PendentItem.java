@@ -9,6 +9,7 @@ import com.luramoth.theveil.entities.RiftState;
 import io.wispforest.accessories.api.Accessory;
 import io.wispforest.accessories.api.slot.SlotReference;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -21,10 +22,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class PendentItem extends Item implements Accessory {
     public PendentItem(Properties properties) {
@@ -51,20 +50,18 @@ public class PendentItem extends Item implements Accessory {
                 data.exitRiftId().get(), data.exitRiftDim().get());
 
         if (exitRift == null || outboundRift == null) {
-            PendantData newData = new PendantData(
-                    data.unlockedDimensions(),
-                    data.selectedIndex(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty()
-            );
-            stack.set(TheVeilModComponents.PENDENT_DATA.get(), newData);
+            if (ticks == 200) {
+                stack.set(TheVeilModComponents.PENDENT_DATA.get(), data.withClearedRifts());
+                return;
+            }
+
+            ticks++;
             return;
         }
 
         switch (outboundRift.getState()) {
             case OPENING -> {
+                TheVeilMod.LOGGER.info("Rift opening");
                 if (ticks == 20) {
                     outboundRift.setState(RiftState.ACTIVE);
                     exitRift.setState(RiftState.ACTIVE);
@@ -72,15 +69,13 @@ public class PendentItem extends Item implements Accessory {
                     break;
                 }
 
-                if (isRiftChunkLoaded(exitRift)) {
+                if (isRiftChunkLoaded(outboundRift.blockPosition(), player.server.getLevel(outboundRift.getDestinationDim()))) {
                     ticks++;
                     return;
                 }
-
-                setForceLoadChunk(outboundRift,true);
-                setForceLoadChunk(exitRift,true);
             }
             case ACTIVE -> {
+                TheVeilMod.LOGGER.info("Rift active");
                 if (outboundRift.getPotentialTravelers().isEmpty()){
                     ticks++;
                     if (ticks == 40) {
@@ -93,10 +88,11 @@ public class PendentItem extends Item implements Accessory {
                 ticks = 0;
             }
             case CLOSING -> {
+                TheVeilMod.LOGGER.info("Rift closing");
                 ticks++;
                 if (ticks == 20) {
-                    setForceLoadChunk(outboundRift,false);
-                    setForceLoadChunk(exitRift,false);
+                    setForceLoadChunk(outboundRift.blockPosition(), player.server.getLevel(player.level().dimension()), false);
+                    setForceLoadChunk(outboundRift.blockPosition(), player.server.getLevel(outboundRift.getDestinationDim()), false);
                     outboundRift.discard();
                     exitRift.discard();
                 }
@@ -111,21 +107,17 @@ public class PendentItem extends Item implements Accessory {
         return null;
     }
 
-    private boolean isRiftChunkLoaded(RiftEntity rift) {
-        ServerLevel riftLevel = Objects.requireNonNull(rift.getServer()).getLevel(rift.level().dimension());
+    private boolean isRiftChunkLoaded(BlockPos pos, ServerLevel level) {
+        if (level == null) return false;
 
-        if (riftLevel == null) return false;
-
-        return riftLevel.isPositionEntityTicking(rift.blockPosition());
+        return level.isPositionEntityTicking(pos);
     }
 
-    public void setForceLoadChunk(RiftEntity rift, boolean shouldForceLoad) {
-        ServerLevel riftLevel = Objects.requireNonNull(rift.getServer()).getLevel(rift.level().dimension());
+    public void setForceLoadChunk(BlockPos pos, ServerLevel level, boolean shouldForceLoad) {
+        if (level == null) return;
 
-        if (riftLevel == null) return;
-
-        ChunkPos riftChunkPos = new ChunkPos(rift.blockPosition());
-        riftLevel.setChunkForced(riftChunkPos.x, riftChunkPos.z, shouldForceLoad);
+        ChunkPos riftChunkPos = new ChunkPos(pos);
+        level.setChunkForced(riftChunkPos.x, riftChunkPos.z, shouldForceLoad);
     }
 
     @Override

@@ -44,11 +44,6 @@ public class RiftEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (this.isExitRift() && parentRift == null)
-            this.setState(RiftState.CLOSING);
-        else if (this.isExitRift())
-            TheVeilMod.LOGGER.info("parent rift still alive");
-
         if (this.level().isClientSide) {
             for (int i = 0; i <3; i++) {
                 double offsetX = (this.random.nextDouble() - 0.5) * 2.0;
@@ -64,7 +59,7 @@ public class RiftEntity extends Entity {
                 );
             }
         } else {
-            if (this.getState() == RiftState.ACTIVE) {
+            if (this.getState() == RiftState.ACTIVE && !this.isExitRift()) {
                 List<Player> travelingPlayers = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(0.5f));
                 for (Player traveler : travelingPlayers) {
                     if (traveler instanceof ServerPlayer serverTraveller) {
@@ -107,6 +102,8 @@ public class RiftEntity extends Entity {
     public List<Player> getPotentialTravelers() {
         return this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(10));
     }
+
+    public ResourceKey<Level> getDestinationDim() { return this.destinationDim; }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {

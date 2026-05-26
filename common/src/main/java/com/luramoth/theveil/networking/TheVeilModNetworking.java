@@ -24,6 +24,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -73,13 +74,18 @@ public class TheVeilModNetworking {
                     RiftEntity departingRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.level());
                     departingRift.setDestination(exitDim);
                     departingRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
+                    ChunkPos outboundChunkPos = new ChunkPos(departingRift.blockPosition());
+                    player.server.getLevel(currentDim).setChunkForced(outboundChunkPos.x, outboundChunkPos.z, true);
                     player.level().addFreshEntity(departingRift);
 
                     // spawning of exit rift
                     RiftEntity exitRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.server.getLevel(exitDim));
                     exitRift.setParentRift(departingRift);
                     exitRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
+                    ChunkPos exitChunkPos = new ChunkPos(exitRift.blockPosition());
+                    player.server.getLevel(exitDim).setChunkForced(exitChunkPos.x, exitChunkPos.z, true);
                     player.server.getLevel(exitDim).addFreshEntity(exitRift);
+
 
                     PendantData newData = new PendantData(
                             dims,
