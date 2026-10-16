@@ -29,8 +29,6 @@ public final class TheVeilMod {
         TheVeilModNetworking.init();
         VeilDimensionHandler.init();
 
-        ReloadListenerRegistry.register(PackType.SERVER_DATA, new CatalystManager());
-
         RiftManager.init();
     }
 }

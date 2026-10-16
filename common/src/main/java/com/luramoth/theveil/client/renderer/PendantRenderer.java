@@ -1,6 +1,7 @@
 package com.luramoth.theveil.client.renderer;
 
 import com.luramoth.theveil.TheVeilMod;
+import com.luramoth.theveil.client.PendantGemColor;
 import com.luramoth.theveil.items.PendentItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.wispforest.accessories.api.client.AccessoryRenderer;
@@ -23,7 +24,7 @@ public class PendantRenderer implements AccessoryRenderer {
                 multiBufferSource.getBuffer(RenderType.armorCutoutNoCull(BASE_TEX)),
                 light, OverlayTexture.NO_OVERLAY, -1);
 
-        int color = PendentItem.getGemColor(stack);
+        int color = PendantGemColor.get(stack);
         model.renderToBuffer(matrices,
                 multiBufferSource.getBuffer(RenderType.armorCutoutNoCull(GEM_TEX)),
                 light, OverlayTexture.NO_OVERLAY, color);

@@ -10,6 +10,6 @@ public class TheVeilModRecipes {
     public static final DeferredRegister<RecipeSerializer<?>> SERIALISERS =
             DeferredRegister.create(TheVeilMod.MOD_ID, Registries.RECIPE_SERIALIZER);
 
-    public static final RegistrySupplier<RecipeSerializer<PendantSmithingRecipe>> PENDANT_SMITHING =
-            SERIALISERS.register("pendant_smithing", PendantSmithingRecipe.Serialiser::new);
+    public static final RegistrySupplier<RecipeSerializer<PendantAttunementRecipe>> PENDANT_ATTUNEMENT =
+            SERIALISERS.register("pendant_attunement", PendantAttunementRecipe.Serializer::new);
 }

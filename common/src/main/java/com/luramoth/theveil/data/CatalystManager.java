@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.luramoth.theveil.TheVeilMod;
+import com.luramoth.theveil.recipies.PendantAttunementRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -13,67 +14,39 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CatalystManager extends SimpleJsonResourceReloadListener {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+public class CatalystManager {
+    public static final int FALLBACK_COLOR = 0xFF130134;
 
-    public static final Map<Item, CatalystData> CATALYSTS = new HashMap<>();
+    private CatalystManager() {}
 
-    public CatalystManager() {
-        super(GSON, "veil_catalysts");
-    }
-
-    @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
-        CATALYSTS.clear();
-
-        object.forEach((location, element) -> {
-            try {
-                JsonObject json = element.getAsJsonObject();
-
-                // get item
-                String itemId = json.get("item").getAsString();
-                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId));
-
-                // get dimension
-                String dimId = json.get("dimension").getAsString();
-                ResourceKey<Level> dimKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimId));
-
-                // get color
-                String hexString = json.get("color").getAsString();
-                int color = Integer.parseInt(hexString, 16) | 0xFF000000;
-
-                CATALYSTS.put(item, new CatalystData(dimKey, color));
-            } catch (Exception e) {
-                TheVeilMod.LOGGER.error("Error loading catalysts: {}", String.valueOf(e));
+    @SuppressWarnings("unchecked")
+    public static List<RecipeHolder<PendantAttunementRecipe>> all(RecipeManager recipes) {
+        List<RecipeHolder<PendantAttunementRecipe>> out = new ArrayList<>();
+        for (RecipeHolder<SmithingRecipe> holder : recipes.getAllRecipesFor(RecipeType.SMITHING)) {
+            if (holder.value() instanceof  PendantAttunementRecipe) {
+                out.add((RecipeHolder<PendantAttunementRecipe>) (RecipeHolder<?>) holder);
             }
-        });
-
-        TheVeilMod.LOGGER.info("Loaded {} veil catalysts.", CATALYSTS.size());
-        CATALYSTS.forEach((item, catalystData) ->
-                TheVeilMod.LOGGER.info("Catalyst: {} -> {}", item, catalystData.dim().location())
-        );
-    }
-
-    public static ResourceKey<Level> getDimensionFor(Item item) {
-        CatalystData data = CATALYSTS.get(item);
-        return (data != null) ? data.dim() : null;
-    }
-
-    public static int getColorFor(ResourceKey<Level> dimension) {
-        List<CatalystData> values = CATALYSTS.values().stream().toList();
-
-        if (values.isEmpty()) return 0xFF130134;
-
-        for (CatalystData value : values) {
-            if (value.dim() == dimension) return value.color();
         }
+        return out;
+    }
 
-        return 0xFF130134;
+    public static int getColorFor(RecipeManager recipes, ResourceKey<Level> dimension) {
+        for (RecipeHolder<SmithingRecipe> holder : recipes.getAllRecipesFor(RecipeType.SMITHING)) {
+            if (holder.value() instanceof PendantAttunementRecipe recipe && recipe.dimension().equals(dimension)) {
+                return recipe.color();
+            }
+        }
+        return FALLBACK_COLOR;
     }
 }

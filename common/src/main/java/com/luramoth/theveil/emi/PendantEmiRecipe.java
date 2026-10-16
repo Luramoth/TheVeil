@@ -4,6 +4,7 @@ import com.luramoth.theveil.TheVeilMod;
 import com.luramoth.theveil.components.PendantData;
 import com.luramoth.theveil.components.TheVeilModComponents;
 import com.luramoth.theveil.items.TheVeilModItems;
+import com.luramoth.theveil.recipies.PendantAttunementRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
@@ -15,6 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,20 +25,17 @@ import java.util.Optional;
 
 public class PendantEmiRecipe implements EmiRecipe {
     private final ResourceLocation id;
-    private final EmiIngredient catalyst;
+    private final EmiStack pendant;
+    private final EmiStack catalyst;
     private final EmiStack output;
 
-    public PendantEmiRecipe(ResourceLocation catalystId, ResourceKey<Level> dim) {
-        // make a unique ID for this EMI entry
-        this.id = ResourceLocation.fromNamespaceAndPath(TheVeilMod.MOD_ID,
-                "/pendant_smithing/" + catalystId.getNamespace() + "/" + catalystId.getPath());
+    public PendantEmiRecipe(RecipeHolder<PendantAttunementRecipe> holder) {
+        PendantAttunementRecipe recipe = holder.value();
 
-        this.catalyst = EmiIngredient.of(List.of(EmiStack.of(BuiltInRegistries.ITEM.get(catalystId))));
-
-        ItemStack resultStack = new ItemStack(TheVeilModItems.PENDANT.get());
-        resultStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(List.of(dim), 0,
-                Optional.empty()));
-        this.output = EmiStack.of(resultStack);
+        this.id = holder.id();
+        this.pendant = EmiStack.of(TheVeilModItems.PENDANT.get());
+        this.catalyst = EmiStack.of(recipe.catalyst());
+        this.output = EmiStack.of(recipe.getResultItem(null));
     }
 
     @Override
@@ -47,7 +46,7 @@ public class PendantEmiRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return List.of(EmiStack.EMPTY, EmiStack.of(TheVeilModItems.PENDANT.get()), catalyst);
+        return List.of(EmiStack.EMPTY, pendant, catalyst);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class PendantEmiRecipe implements EmiRecipe {
         widgetHolder.addTexture(EmiTexture.EMPTY_ARROW, 62, 1);
 
         widgetHolder.addSlot(EmiStack.EMPTY, 0,0);
-        widgetHolder.addSlot(EmiStack.of(TheVeilModItems.PENDANT.get()), 18, 0);
+        widgetHolder.addSlot(pendant, 18, 0);
         widgetHolder.addSlot(catalyst, 36, 0);
 
         widgetHolder.addSlot(output, 94, 0).recipeContext(this);

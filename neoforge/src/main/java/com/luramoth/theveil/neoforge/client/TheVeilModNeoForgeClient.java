@@ -1,5 +1,6 @@
 package com.luramoth.theveil.neoforge.client;
 
+import com.luramoth.theveil.client.PendantGemColor;
 import com.luramoth.theveil.client.TheVeilModClient;
 import com.luramoth.theveil.items.PendentItem;
 import com.luramoth.theveil.items.TheVeilModItems;
@@ -25,7 +26,7 @@ public class TheVeilModNeoForgeClient {
 
     @SubscribeEvent
     public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, tintIndex) -> tintIndex == 1 ? PendentItem.getGemColor(stack) : -1,
+        event.register((stack, tintIndex) -> tintIndex == 1 ? PendantGemColor.get(stack) : -1,
                 TheVeilModItems.PENDANT.get());
     }
 }

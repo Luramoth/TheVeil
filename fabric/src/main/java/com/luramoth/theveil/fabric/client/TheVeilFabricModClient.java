@@ -1,5 +1,6 @@
 package com.luramoth.theveil.fabric.client;
 
+import com.luramoth.theveil.client.PendantGemColor;
 import com.luramoth.theveil.client.TheVeilModClient;
 import com.luramoth.theveil.items.PendentItem;
 import com.luramoth.theveil.items.TheVeilModItems;
@@ -12,7 +13,7 @@ public final class TheVeilFabricModClient implements ClientModInitializer {
         TheVeilModClient.initRegistrations();
         TheVeilModClient.init();
 
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? PendentItem.getGemColor(stack) : -1,
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? PendantGemColor.get(stack) : -1,
                 TheVeilModItems.PENDANT.get());
     }
 }
