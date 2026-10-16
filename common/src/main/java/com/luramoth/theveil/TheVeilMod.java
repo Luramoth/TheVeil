@@ -7,7 +7,7 @@ import com.luramoth.theveil.events.VeilDimensionHandler;
 import com.luramoth.theveil.items.TheVeilModItems;
 import com.luramoth.theveil.networking.TheVeilModNetworking;
 import com.luramoth.theveil.recipies.TheVeilModRecipes;
-import com.luramoth.theveil.worldgen.TheVeilModDimensions;
+import com.luramoth.theveil.rifts.RiftManager;
 import dev.architectury.registry.ReloadListenerRegistry;
 import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
@@ -30,5 +30,7 @@ public final class TheVeilMod {
         VeilDimensionHandler.init();
 
         ReloadListenerRegistry.register(PackType.SERVER_DATA, new CatalystManager());
+
+        RiftManager.init();
     }
 }

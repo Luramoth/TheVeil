@@ -21,6 +21,11 @@ import net.minecraft.world.item.Item;
 
 public class TheVeilModClient {
 
+    public static void initRegistrations() {
+        // Rift Renderer
+        EntityRendererRegistry.register(TheVeilModEntities.RIFT, RiftRenderer::new);
+    }
+
     public static void init(){
         // keybinds
         TheVeilModKeybinds.init();
@@ -36,9 +41,6 @@ public class TheVeilModClient {
                 TheVeilModNetworking.sendAction(PendantAction.OPEN_RIFT);
             }
         });
-
-        // Rift Renderer
-        EntityRendererRegistry.register(TheVeilModEntities.RIFT, RiftRenderer::new);
 
         // Pendant appearence
         ItemPropertiesRegistry.register(TheVeilModItems.PENDANT.get(),

@@ -14,6 +14,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 @Mod(value = "the_veil", dist = Dist.CLIENT)
 public class TheVeilModNeoForgeClient {
     public TheVeilModNeoForgeClient(FMLModContainer container, IEventBus modBus, Dist dist) {
+        TheVeilModClient.initRegistrations();
         modBus.addListener(this::onClientSetup);
         modBus.addListener(TheVeilModNeoForgeClient::registerItemColors);
     }

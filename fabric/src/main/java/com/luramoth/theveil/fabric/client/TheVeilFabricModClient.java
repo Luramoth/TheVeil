@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 public final class TheVeilFabricModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        TheVeilModClient.initRegistrations();
         TheVeilModClient.init();
 
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? PendentItem.getGemColor(stack) : -1,

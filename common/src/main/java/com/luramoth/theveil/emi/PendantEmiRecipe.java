@@ -35,8 +35,7 @@ public class PendantEmiRecipe implements EmiRecipe {
 
         ItemStack resultStack = new ItemStack(TheVeilModItems.PENDANT.get());
         resultStack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(List.of(dim), 0,
-                Optional.empty(),Optional.empty(),
-                Optional.empty(),Optional.empty()));
+                Optional.empty()));
         this.output = EmiStack.of(resultStack);
     }
 

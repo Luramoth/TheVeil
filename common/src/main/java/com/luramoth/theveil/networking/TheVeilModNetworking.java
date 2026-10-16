@@ -1,14 +1,13 @@
 package com.luramoth.theveil.networking;
 
 import com.luramoth.theveil.TheVeilMod;
-import com.luramoth.theveil.Utils.Axis;
-import com.luramoth.theveil.Utils.VecUtils;
 import com.luramoth.theveil.components.PendantData;
 import com.luramoth.theveil.components.TheVeilModComponents;
-import com.luramoth.theveil.entities.RiftEntity;
-import com.luramoth.theveil.entities.TheVeilModEntities;
 import com.luramoth.theveil.items.PendentItem;
 import com.luramoth.theveil.items.TheVeilModItems;
+import com.luramoth.theveil.rifts.RiftAnchor;
+import com.luramoth.theveil.rifts.RiftManager;
+import com.luramoth.theveil.rifts.RiftPair;
 import com.luramoth.theveil.worldgen.TheVeilModDimensions;
 import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
@@ -19,12 +18,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -37,78 +34,53 @@ public class TheVeilModNetworking {
     private static void handleAction(ServerPlayer player, PendantAction action) {
         ItemStack stack = findPendant(player);
 
-        if (stack != null && !stack.isEmpty()) {
-            PendantData data = stack.getOrDefault(TheVeilModComponents.PENDENT_DATA.get(), PendantData.DEFAULT);
-            List<ResourceKey<Level>> dims = data.unlockedDimensions();
-            if (dims.isEmpty()) return;
+        if (stack == null || stack.isEmpty()) return;
 
-            int newIndex = data.selectedIndex();
-            switch (action) {
-                case NEXT -> {
-                    newIndex = (newIndex + 1) % dims.size();
-                    player.playNotifySound(SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.4f, 1.6f);
-                }
-                case LAST -> {
-                    newIndex = (newIndex - 1 + dims.size()) % dims.size();
-                    player.playNotifySound(SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.4f, 1.3f);
-                }
-                case OPEN_RIFT -> {
-                    if (data.outboundRiftId().isPresent())
-                        return;
+        PendantData data = stack.getOrDefault(TheVeilModComponents.PENDENT_DATA.get(), PendantData.DEFAULT);
+        List<ResourceKey<Level>> dims = data.unlockedDimensions();
+        if (dims.isEmpty()) return;
 
-                    ResourceKey<Level> currentDim = player.level().dimension();
-                    ResourceKey<Level> targetDim = dims.get(data.selectedIndex());
-
-                    ResourceKey<Level> exitDim;
-                    if (currentDim.equals(TheVeilModDimensions.THE_VEIL_KEY)) {
-                        exitDim = targetDim;
-                    } else {
-                        exitDim = TheVeilModDimensions.THE_VEIL_KEY;
-                    }
-
-                    Vec3 spawnPos = player.position().add(player.getLookAngle().scale(3.5));
-
-                    if (exitDim == null) return;
-
-                    // spawning departure rift
-                    RiftEntity departingRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.level());
-                    departingRift.setDestination(exitDim);
-                    departingRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
-                    ChunkPos outboundChunkPos = new ChunkPos(departingRift.blockPosition());
-                    player.server.getLevel(currentDim).setChunkForced(outboundChunkPos.x, outboundChunkPos.z, true);
-                    player.level().addFreshEntity(departingRift);
-
-                    // spawning of exit rift
-                    RiftEntity exitRift = new RiftEntity(TheVeilModEntities.RIFT.get(), player.server.getLevel(exitDim));
-                    exitRift.setParentRift(departingRift);
-                    exitRift.moveTo(spawnPos, (float) player.getLookAngle().y + 180, player.onGround() ? (float) -player.getLookAngle().x : 0);
-                    ChunkPos exitChunkPos = new ChunkPos(exitRift.blockPosition());
-                    player.server.getLevel(exitDim).setChunkForced(exitChunkPos.x, exitChunkPos.z, true);
-                    player.server.getLevel(exitDim).addFreshEntity(exitRift);
-
-
-                    PendantData newData = new PendantData(
-                            dims,
-                            data.selectedIndex(),
-                            Optional.of(departingRift.getUUID()),
-                            Optional.of(currentDim),
-                            Optional.of(exitRift.getUUID()),
-                            Optional.of(exitDim)
-                    );
-                    stack.set(TheVeilModComponents.PENDENT_DATA.get(), newData);
-
-                    return;
-                }
+        switch (action) {
+            case NEXT -> {
+                select(player, stack, data, (data.selectedIndex() + 1) % dims.size());
+                player.playNotifySound(SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.4f, 1.6f);
             }
-
-            stack.set(TheVeilModComponents.PENDENT_DATA.get(), new PendantData(dims, newIndex,
-                    data.outboundRiftId(), data.outboundRiftDim(),
-                    data.exitRiftId(), data.exitRiftDim()));
-
-            ResourceKey<Level> dim = dims.get(newIndex);
-            String translationKey = "dimension." + dim.location().getNamespace() + "." + dim.location().getPath();
-            player.displayClientMessage(Component.translatable("message.the_veil.attuned").append(Component.translatable(translationKey)), true);
+            case LAST -> {
+                select(player, stack, data, (data.selectedIndex() -1 + dims.size()) % dims.size());
+                player.playNotifySound(SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.4f, 1.3f);
+            }
+            case OPEN_RIFT -> openRift(player, stack, data);
         }
+    }
+
+    private static void select(ServerPlayer player, ItemStack stack, PendantData data, int newIndex) {
+        stack.set(TheVeilModComponents.PENDENT_DATA.get(), data.withSelectedIndex(newIndex));
+
+        ResourceKey<Level> dim = data.unlockedDimensions().get(newIndex);
+        String translationKey = "dimension." + dim.location().getNamespace() + "." + dim.location().getPath();
+        player.displayClientMessage(Component.translatable("message.the_veil.attuned").append(Component.translatable(translationKey)),true);
+    }
+
+    private static void openRift(ServerPlayer player, ItemStack stack, PendantData data) {
+        RiftManager manager = RiftManager.of(player.server);
+
+        data.activeRiftId().ifPresent(manager::close);
+
+        ResourceKey<Level> currentDim = player.level().dimension();
+        ResourceKey<Level> exitDim = currentDim.equals(TheVeilModDimensions.THE_VEIL_KEY)
+                ? data.unlockedDimensions().get(data.selectedIndex())
+                : TheVeilModDimensions.THE_VEIL_KEY;
+
+        if (player.server.getLevel(exitDim) == null) return;
+
+        Vec3 pos = player.position().add(player.getLookAngle().scale(3.5));
+        float yRot = player.getYRot() + 180.0f;
+
+        RiftPair pair = manager.create(player.getUUID(),
+                new RiftAnchor(currentDim, pos, yRot),
+                new RiftAnchor(exitDim, pos, yRot));
+
+        stack.set(TheVeilModComponents.PENDENT_DATA.get(), data.withActiveRift(pair.id));
     }
 
     private static ItemStack findPendant(ServerPlayer player) {
@@ -128,16 +100,13 @@ public class TheVeilModNetworking {
     public static void sendAction(PendantAction action) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeEnum(action);
-        NetworkManager.sendToServer(PENDANT_ACTION_ID, new RegistryFriendlyByteBuf(buf, RegistryAccess.EMPTY));
+        NetworkManager.sendToServer(new PendantActionPacket(action));
     }
 
     public static void init() {
-        NetworkManager.registerReceiver(NetworkManager.Side.C2S, PENDANT_ACTION_ID, (buf, context) -> {
-            PendantAction action = buf.readEnum(PendantAction.class);
-
-            context.queue(() -> {
-                handleAction((ServerPlayer) context.getPlayer(), action);
-            });
-        });
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S,
+                PendantActionPacket.TYPE, PendantActionPacket.STREAM_CODEC,
+                (packet, context) -> context.queue(() ->
+                        handleAction((ServerPlayer) context.getPlayer(), packet.action())));
     }
 }
