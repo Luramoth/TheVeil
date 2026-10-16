@@ -1,0 +1,76 @@
+// setup for multiplayer testing, opens a server and has two clients auto-join
+
+def loader = project.name == 'neoforge' ? 'Neoforge' : 'Fabric'
+
+loom {
+    runs {
+        server {
+            configName = "${loader} Server"
+            runDir "run/server"
+            ideConfigGenerated true
+        }
+        mpClient1 {
+            inherit client
+            configName = "${loader} MP Client 1"
+            programArgs "--username", "Player1", "--quickPlayMultiplayer", "localhost:25565"
+            runDir "run/client1"
+            ideConfigGenerated true
+        }
+        mpClient2 {
+            inherit client
+            configName = "${loader} MP Client 2"
+            programArgs "--username", "Player2", "--quickPlayMultiplayer", "localhost:25565"
+            runDir "run/client2"
+            ideConfigGenerated true
+        }
+    }
+}
+
+def ideName = { String name -> "${name} (${project.path})" }
+
+def compoundName = "${loader} Multiplayer"
+def compoundXml = """\
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="${compoundName}" type="CompoundRunConfigurationType">
+        <!--<toRun name="${ideName("${loader} Server")}" type="Application" />-->
+        <toRun name="${ideName("${loader} MP Client 1")}" type="Application" />
+        <toRun name="${ideName("${loader} MP Client 2")}" type="Application" />
+        <method v="2"/>
+    </configuration>
+</component>
+"""
+def compoundFile = rootProject.file(".run/${compoundName}.run.xml")
+if (!compoundFile.exists() || compoundFile.text != compoundXml) {
+    compoundFile.parentFile.mkdirs()
+    compoundFile.text = compoundXml
+}
+
+def serverDir = file('run/server')
+serverDir.mkdirs()
+
+def eula = new File(serverDir, 'eula.txt')
+if (!eula.exists() || !eula.text.contains('eula=true')) {
+    eula.text = 'eula=true\n'
+}
+
+def devServerProperties = [
+        'online-mode'   : 'false',
+        'gamemode'      : 'creative',
+        'force-gamemode': 'true'
+]
+
+def props = new File(serverDir, 'server.properties')
+def original = props.exists() ? props.text : ''
+def text = original
+devServerProperties.each { key, value ->
+    def line = "${key}=${value}"
+    def pattern = '(?m)^' + java.util.regex.Pattern.quote(key) + '=.*$'
+    if (text =~ pattern) {
+        text = text.replaceAll(pattern, java.util.regex.Matcher.quoteReplacement(line))
+    } else {
+        text += (text.isEmpty() || text.endsWith('\n') ? '' : '\n') + line + '\n'
+    }
+}
+if (!props.exists() || text != original) {
+    props.text = text
+}

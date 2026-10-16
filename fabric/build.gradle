@@ -60,3 +60,5 @@ shadowJar {
 remapJar {
     inputFile.set shadowJar.archiveFile
 }
+
+apply from: rootProject.file('dev-multiplayer.gradle')
